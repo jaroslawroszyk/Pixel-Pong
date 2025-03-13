@@ -49,14 +49,12 @@ class PongAIController:
             else:
                 self.game.move_paddle(left=False, up=False)
 
-            # self.game.loop()
-            # print(game_info.left_score, game_info.right_score)
             self.game.draw(draw_score=True, draw_hits=False)
             pygame.display.update()
 
         pygame.quit()
 
-    def train_ai_agents(self, genome1, genome2, config, draw = False):
+    def train_ai_agents(self, genome1, genome2, config, draw=False):
         net1 = neat.nn.FeedForwardNetwork.create(genome1, config)
         net2 = neat.nn.FeedForwardNetwork.create(genome2, config)
         self.genome1 = genome1
@@ -108,9 +106,7 @@ class PongAIController:
             else:  # Move down
                 valid = self.game.move_paddle(left=left, up=False)
 
-            if (
-                not valid
-            ): 
+            if not valid:
                 penalty = 1
                 genome.fitness -= penalty
 
@@ -131,8 +127,6 @@ def evaluate_genomes(genomes, config):
     window, width, height = create_game_window()
 
     for i, (genome_id1, genome1) in enumerate(genomes):
-        # if i == len(genomes) - 1:
-        #     break
         genome1.fitness = 0
         for genome_id2, genome2 in genomes[min(i + 1, len(genomes) - 1) :]:
             genome2.fitness = 0 if genome2.fitness is None else genome2.fitness
@@ -153,7 +147,7 @@ def start_neat_training(config):
     p.add_reporter(stats)
     p.add_reporter(neat.Checkpointer(1))
 
-    generations = 2 # Number of generations to run the training for
+    generations = 2  # Number of generations to run the training for
     winner = p.run(evaluate_genomes, generations)
     with open("models/winner.pkl", "wb") as f:
         pickle.dump(winner, f)
